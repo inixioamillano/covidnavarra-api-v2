@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
-const crPath = '/etc/letsencrypt/live/testapi.leiva.io/fullchain.pem';
-const pkPath = '/etc/letsencrypt/live/testapi.leiva.io/privkey.pem';
+const crPath = '/etc/letsencrypt/live/inixio.dev/fullchain.pem';
+const pkPath = '/etc/letsencrypt/live/inixio.dev/privkey.pem';
 const options: any = {};
 
 import * as fs from 'fs';
@@ -21,5 +21,4 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, options);
   await app.listen(3000);
 }
-bootstrap();
 bootstrap();
