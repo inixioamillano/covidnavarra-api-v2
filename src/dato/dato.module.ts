@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Dato } from './entities/dato.entity';
 import { CsvModule } from 'nest-csv-parser';
 import { HttpModule } from '@nestjs/axios';
-import { Zona } from 'src/zona/entities/zona.entity';
+import { Zona } from '../zona/entities/zona.entity';
 
 @Module({
   imports: [

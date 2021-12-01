@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { throws } from 'assert';
 import { CsvParser } from 'nest-csv-parser';
 import { take } from 'rxjs';
-import { Zona } from 'src/zona/entities/zona.entity';
+import { Zona } from '../zona/entities/zona.entity';
 import { Repository } from 'typeorm';
 import { Dato } from './entities/dato.entity';
 const fs = require("fs");
