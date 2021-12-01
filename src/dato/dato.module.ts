@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { DatoService } from './dato.service';
 import { DatoController } from './dato.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Dato } from './entities/dato.entity';
+import { Dato, DatoSchema } from './entities/dato.entity';
 import { CsvModule } from 'nest-csv-parser';
 import { HttpModule } from '@nestjs/axios';
-import { Zona } from 'src/zona/entities/zona.entity';
+import { Zona, ZonaSchema } from 'src/zona/entities/zona.entity';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Dato, Zona]),
+    MongooseModule.forFeature([{name: Dato.name, schema: DatoSchema}, {name: Zona.name, schema: ZonaSchema}]),
     CsvModule,
     HttpModule
   ],

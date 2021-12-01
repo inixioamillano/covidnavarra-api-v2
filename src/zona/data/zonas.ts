@@ -1,6 +1,6 @@
-import { Zona } from "../entities/zona.entity";
+import { ZonaDto } from "../dtos/zona.dto";
 
-const ZONAS: Zona[] = [
+const ZONAS: ZonaDto[] = [
     {
       "DesZR": "Olite",
       "CodZR": 43,

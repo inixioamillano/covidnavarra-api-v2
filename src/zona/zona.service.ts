@@ -1,29 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import ZONAS from './data/zonas';
 import { Zona } from './entities/zona.entity';
 
 @Injectable()
 export class ZonaService {
 
-  constructor(@InjectRepository(Zona) private zonasRepository: Repository<Zona>){
+  constructor(@InjectModel(Zona.name) private zonasModel: Model<Zona>){
     this.populate();
   }
 
-  findAll() {
-    return this.zonasRepository.find({
-      order: {
-        DesZR: 'ASC'
-      }
-    });
+  async findAll() {
+    console.log('Llego aqui');
+    return await this.zonasModel.find({}).sort({DesZR: 'ASC'}).exec();
   }
 
   private async populate() {
-    const total = await this.zonasRepository.count();
+    const total = await this.zonasModel.count();
+    console.log('Zonas', total)
     if (total < ZONAS.length) {
-      await this.zonasRepository.delete({});
-      this.zonasRepository.save(ZONAS);
+      await this.zonasModel.deleteMany({});
+      this.zonasModel.insertMany(ZONAS);
     }
   }
 

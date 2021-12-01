@@ -2,11 +2,15 @@ import { Module } from '@nestjs/common';
 import { ZonaService } from './zona.service';
 import { ZonaController } from './zona.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import ZONAS from './data/zonas';
-import { Zona } from './entities/zona.entity';
+import { Zona, ZonaSchema } from './entities/zona.entity';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Zona])],
+  imports: [
+    MongooseModule.forFeature([
+      {name: Zona.name, schema: ZonaSchema}
+    ])
+  ],
   controllers: [ZonaController],
   providers: [ZonaService]
 })

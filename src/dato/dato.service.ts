@@ -1,12 +1,13 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { throws } from 'assert';
+import { Model } from 'mongoose';
 import { CsvParser } from 'nest-csv-parser';
 import { take } from 'rxjs';
 import { Zona } from 'src/zona/entities/zona.entity';
-import { Repository } from 'typeorm';
 import { Dato } from './entities/dato.entity';
 const fs = require("fs");
 
@@ -14,8 +15,8 @@ const fs = require("fs");
 export class DatoService {
 
   constructor(
-    @InjectRepository(Dato) private datosRepositorio: Repository<Dato>,
-    @InjectRepository(Zona) private zonasRepositorio: Repository<Zona>,
+    @InjectModel(Dato.name) private datos: Model<Dato>,
+    @InjectModel(Zona.name) private zonas: Model<Zona>,
     private readonly csvParser: CsvParser,
     private readonly httpService: HttpService) {
       this.loadNewData();
@@ -29,15 +30,14 @@ export class DatoService {
         next: async (csv) => {
           fs.writeFileSync(__dirname + '/datos.csv', csv.data);
           const stream = fs.createReadStream(__dirname + '/datos.csv')
-          const datos = await this.csvParser.parse(stream, Dato);
-          datos.list.forEach((dato => {
-            this.datosRepositorio.createQueryBuilder()
-            .insert()
-            .into(Dato)
-            .values(dato)
-            .execute()
-            .catch(e => e);
-          }))
+          try {
+            const datos = await this.csvParser.parse(stream, Dato, null, null, {strict: false});
+            datos.list.forEach((d) => {
+              this.datos.create(d).catch(e => e);
+            });
+          } catch(e) {
+            console.log(e);
+          }
         },
         error: (err) => {
           console.log(err);
@@ -56,7 +56,7 @@ export class DatoService {
   }
 
   async getDatos(CodZR: number) {
-    const datos = await this.datosRepositorio.manager.query(`select selected_date as Fecha, IFNULL(sum(dato.NuevosCasos),0) as NuevosCasos, max(createdAt) as updatedAt from 
+    /*const datos = await this.datos.query(`select selected_date as Fecha, IFNULL(sum(dato.NuevosCasos),0) as NuevosCasos, max(createdAt) as updatedAt from 
     (select adddate('1970-01-01',t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) selected_date from
      (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
      (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
@@ -79,11 +79,11 @@ export class DatoService {
     const conIA = datos.map((d, index) => {
       return {...d, ia14: this.getIA14(datos, index, habitantes), AcumuladoCasosHastaLaFecha: this.getAcumulados(datos, index)};
     })
-    return {datos: conIA, desglose: await this.getDesglose(CodZR)}
+    return {datos: conIA, desglose: await this.getDesglose(CodZR)}*/
   }
 
   async getDesglose(CodZR: number) {
-    return this.datosRepositorio.query(`select DesMun, sum(NuevosCasos) as NuevosCasos from dato where Fecha = (select max(Fecha) from dato) ${CodZR ? `and CodZR = ${CodZR}` : ''} group by DesMun order by NuevosCasos desc, DesMun`)
+    //return this.datos.query(`select DesMun, sum(NuevosCasos) as NuevosCasos from dato where Fecha = (select max(Fecha) from dato) ${CodZR ? `and CodZR = ${CodZR}` : ''} group by DesMun order by NuevosCasos desc, DesMun`)
   }
 
 }

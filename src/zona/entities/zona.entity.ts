@@ -1,15 +1,19 @@
-import { Column, Entity } from "typeorm";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
-@Entity()
-export class Zona {
+@Schema()
+export class Zona extends Document {
     
-    @Column({primary: true})
+    @Prop({nullable: false})
     CodZR: number;
 
-    @Column({nullable: false})
+    @Prop({nullable: false})
     DesZR: string;
 
-    @Column({nullable: false})
+    @Prop({nullable: false})
     habitantes: number;
 
 }
+
+
+export const ZonaSchema = SchemaFactory.createForClass(Zona);

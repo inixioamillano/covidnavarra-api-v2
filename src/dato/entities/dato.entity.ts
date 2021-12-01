@@ -1,37 +1,31 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
-@Entity()
-@Index(["Fecha", "CodZR", "CodMun"], { unique: true })
-export class Dato {
-
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
-    @Column({nullable: true})
+@Schema()
+export class Dato extends Document {
+    
+    @Prop({nullable: true})
     Fecha: Date;
 
-    @Column({nullable: true})
+    @Prop({nullable: true})
     CodZR: number;
 
-    @Column({nullable: true})
+    @Prop({nullable: true})
     DesZR: string;
 
-    @Column({nullable: true})
+    @Prop({nullable: true})
     CodMun: number;
 
-    @Column({nullable: true})
+    @Prop({nullable: true})
     DesMun: string;
 
-    @Column({nullable: true})
+    @Prop({nullable: true})
     NuevosCasos: number;
 
-    @Column({nullable: true})
+    @Prop({nullable: true})
     AcumuladoCasosHastaLaFecha: number;
 
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
-    
 }
+
+
+export const DatoSchema = SchemaFactory.createForClass(Dato);
