@@ -19,6 +19,7 @@ if (fs.existsSync(crPath) && fs.existsSync(pkPath)) {
 async function bootstrap() {
   // le pasamos las options al NestFactory
   const app = await NestFactory.create(AppModule, options);
+  app.enableCors();
   await app.listen(3000);
 }
 bootstrap();
