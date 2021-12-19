@@ -6,7 +6,7 @@ import { throws } from 'assert';
 import { CsvParser } from 'nest-csv-parser';
 import { take } from 'rxjs';
 import { Zona } from '../zona/entities/zona.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Dato } from './entities/dato.entity';
 const fs = require("fs");
 
@@ -43,7 +43,8 @@ export class DatoService {
                 CodZR,
                 CodMun,
                 DesZR,
-                DesMun
+                DesMun,
+                NuevosCasos: Not(dato.NuevosCasos)
               }, dato)
               .catch(e => e);
           }))
