@@ -30,13 +30,22 @@ export class DatoService {
           fs.writeFileSync(__dirname + '/datos.csv', csv.data);
           const stream = fs.createReadStream(__dirname + '/datos.csv')
           const datos = await this.csvParser.parse(stream, Dato);
-          datos.list.forEach((dato => {
-            this.datosRepositorio.createQueryBuilder()
-            .insert()
-            .into(Dato)
-            .values(dato)
-            .execute()
-            .catch(e => e);
+          datos.list.forEach((async dato => {
+            await this.datosRepositorio.createQueryBuilder()
+              .insert()
+              .into(Dato)
+              .values(dato)
+              .execute()
+              .catch(e => e);
+            const { Fecha, CodZR, CodMun, DesZR, DesMun } = dato;
+            await this.datosRepositorio.update({
+                Fecha,
+                CodZR,
+                CodMun,
+                DesZR,
+                DesMun
+              }, dato)
+              .catch(e => e);
           }))
         },
         error: (err) => {
