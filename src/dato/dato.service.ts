@@ -28,7 +28,6 @@ export class DatoService {
       .subscribe({
         next: async (csv) => {
           const csvStr = csv.data.split('\n\n')[0];
-          console.log(csvStr);
           fs.writeFileSync(__dirname + '/datos.csv', csvStr);
           const stream = fs.createReadStream(__dirname + '/datos.csv')
           const datos = await this.csvParser.parse(stream, Dato);
