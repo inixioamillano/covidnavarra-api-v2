@@ -27,9 +27,13 @@ export class DatoService {
       .pipe(take(1))
       .subscribe({
         next: async (csv) => {
-          const csvStr = csv.data.split('\n\n')[0];
+          let csvStr = csv.data.split('\n\n')[0];
+          let lines = csvStr.split('\n');
+          lines = lines.filter((l, index) => index === 0 || l.startsWith('2022-'));
+          csvStr = lines.join('\n');
+          console.log(__dirname + '/datos.csv');
           fs.writeFileSync(__dirname + '/datos.csv', csvStr);
-          const stream = fs.createReadStream(__dirname + '/datos.csv')
+          const stream = fs.createReadStream(__dirname + '/datos.csv');
           const datos = await this.csvParser.parse(stream, Dato);
           datos.list.forEach((async dato => {
             await this.datosRepositorio.createQueryBuilder()
